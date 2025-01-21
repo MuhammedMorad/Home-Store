@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Home Store - طلب شراء </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='images/order-now.png') }}" rel="icon">
+</head>
+<body>
+    
+    <!-- Start content -->
+    <div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <h3 class="mb-3 text-center"> المنتجات المختارة 🛒</h3>
+                <div class="text-center">
+                    <img src="{{ url_for('static', filename='products/' + product.image_filename) }}" class="card-img-top" alt="صورة المنتج">
+                </div>
+                <div class="card-body text-center">
+                    <h3 id="data-name" class="card-title" data-name="{{ product.name }}">{{ product.name }}</h3>
+                    <p id="data-description" class="card-text" data-description="{{ product.description }}">{{ product.description }}</p>
+                    <strong id="data-price" class="text-success" data-price="{{ product.price }}">{{ product.price }} EGP</strong>
+                </div>
+            </div>
+            
+            <div class="card mt-3 p-3">
+                <h4 class="text-center">أدخل بياناتك</h4>
+                <form id="order-form">
+                    <input type="text" id="customer-name" class="form-control" placeholder="الاسم" required>
+                    <input type="text" id="customer-phone" class="form-control" placeholder="رقم الهاتف" required>
+                    <input type="text" id="customer-address" class="form-control" placeholder="العنوان" required>
+                    <a  target="_blank">
+                        <button type="submit" class="btn btn-primary w-100 mt-3" target="_blank" >📩 إرسال الطلب عبر واتساب</button>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- End content -->
+
+
+    <!--Start Footer-->
+    <div style="margin-bottom: 150px;"></div>
+    <footer class="fixed-bottom bg-light p-3">
+        <div class="container d-flex justify-content-around">
+            <a href="{{ url_for('index') }}" class="text-dark d-flex flex-column align-items-center text-center">
+                <img src="{{ url_for('static', filename='images/home.png') }}" alt="الرئيسية" width="25"> 
+                الرئيسية
+            </a>
+            <a href="{{ url_for('product') }}" class="text-dark d-flex flex-column align-items-center text-center">
+                <img src="{{ url_for('static', filename='images/products.png') }}" alt="المنتجات" width="25"> 
+                المنتجات
+            </a>
+            <a href="#" class="text-dark d-flex flex-column align-items-center text-center" data-bs-toggle="modal" data-bs-target="#cartModal">
+                <img src="{{ url_for('static', filename='images/shopping-cart.png') }}" alt=" عربة التسوق" width="25"> 
+                عربة التسوق
+            </a
+            
+        </div>
+    </footer>
+    <!--End Footer-->
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+
+        }
+        .product-img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card {
+            direction: rtl; 
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .form-control {
+            margin-bottom: 10px;
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+
+    <script>
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        document.getElementById('product-name').textContent = getQueryParam('name');
+        document.getElementById('product-description').textContent = getQueryParam('description');
+        document.getElementById('product-price').textContent = "السعر: EGP " + getQueryParam('price');
+        document.getElementById('product-image').src = getQueryParam('image');
+
+        document.getElementById('order-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+            let name = document.getElementById('customer-name').value;
+            let phone = document.getElementById('customer-phone').value;
+            let address = document.getElementById('customer-address').value;
+            let productName = getQueryParam('name');
+            let productPrice = getQueryParam('price');
+
+            let message = `طلب جديد:\n📦 المنتج: ${productName}\n💰 السعر: EGP ${productPrice}\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 العنوان: ${address}`;
+            let whatsappURL = `whatsapp://send?phone=201009324327&text=${encodeURIComponent(message)}`;
+
+            window.location.href = whatsappURL;
+        });
+    </script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

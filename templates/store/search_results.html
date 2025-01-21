@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Store - بحث عن {{ request.args.get('product_name', 'منتج') }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="{{ url_for('static', filename='images/search.png') }}" rel="icon">
+</head>
+<body>
+    <!--Start Navbar-->
+    <nav class="navbar navbar-light">
+        <div class="container d-flex justify-content-between">
+            <a class="navbar-brand" href="{{ url_for('index') }}">Home Store</a>
+                <form method="GET" action="{{ url_for('search_product') }}" class="d-flex mb-4">
+                    <div class="input-group">
+                        <input id="search-input" name="product_name" class="form-control me-2" type="search" placeholder="بحث عن المنتج" aria-label="بحث" required>
+                        <button class="btn btn-outline-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+        </div>
+    </nav>    
+    <!--End Navbar-->
+    
+    <div class="container mt-5">
+    <h1 class="text-center mb-5">نتائج البحث</h1>
+    <div class="row">
+        {% for product in products %}
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card">
+                    <a href="{{ url_for('product_details', product_id=product.id) }}">
+                        <img src="{{ url_for('static', filename='products/' + product.image_filename) }}" class="card-img-top" alt="صورة المنتج">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <p class="card-text">
+                                {% if product.old_price %}
+                                    <del class="text-danger">{{ product.old_price }}EGP</del>
+                                    <span class="mx-2">|</span>
+                                {% endif %}
+                                <strong class="text-success">{{ product.price }} EGP</strong>
+                            </p>
+                        </div>
+                    </a>                    
+                </div>
+            </div>
+        {% else %}
+            <p class="text-center">لا توجد نتائج للبحث عن "{{ request.args.get('product_name') }}"</p>
+        {% endfor %}
+    </div>
+    </div>
+
+    <!-- Start shopping cart -->
+    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">🛒 عربة التسوق</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+                </div>
+                <div class="modal-body">
+                    <ul id="cart-items" class="list-group mb-3"></ul>
+                    <div class="d-flex justify-content-center">
+                        <h5 id="total-price" class="text-success">EGP 0.00 : الاجمالي</h5>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" onclick="clearCart()">🗑️ تفريغ العربة</button>
+                    <a href="{{ url_for('checkout') }}">
+                        <button class="btn btn-success" onclick="goToCheckout()">✅ استكمل الشراء</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End shopping cart -->
+
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toast-container">
+            <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true" id="success-toast">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        تم إضافة المنتج إلى العربة بنجاح!
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+    </div>
+    
+    <!--Start Footer-->
+    <div class="container p-3">
+        <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+            <p class="col-md-4 mb-0 text-body-secondary">&copy; 2025 Mohamed Mustafa Morad </p>
+            <a href="https://www.facebook.com/profile.php?id=100024441256316" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+                <img src="{{ url_for('static', filename='images/logo-RGB.png') }}" alt="" style="width: 100px; height: auto;">
+            </a>
+
+            <ul class="nav col-md-4 justify-content-end">
+                <li class="nav-item"><a href="https://wa.me/201009324327" class="nav-link px-2 text-body-secondary">تواصل معنا</a></li>
+                <li class="nav-item"><a href="{{ url_for('product') }}" class="nav-link px-2 text-body-secondary">المنتجات</a></li>
+                <li class="nav-item"><a href="{{ url_for('index') }}" class="nav-link px-2 text-body-secondary">الصفحة الرئيسية </a></li>
+
+            </ul>
+        </footer>
+    </div>
+    <!--End Footer-->
+
+
+    <!--Start Footer-->
+    <div style="margin-bottom: 50px;"></div>
+    <footer class="fixed-bottom bg-light p-3">
+        <div class="container d-flex justify-content-around">
+            <a href="{{ url_for('index') }}" class="text-dark d-flex flex-column align-items-center text-center">
+                <img src="{{ url_for('static', filename='images/home.png') }}" alt="الرئيسية" width="25"> 
+                الرئيسية
+            </a>
+            <a href="{{ url_for('product') }}" class="text-dark d-flex flex-column align-items-center text-center">
+                <img src="{{ url_for('static', filename='images/products.png') }}" alt="المنتجات" width="25"> 
+                المنتجات
+            </a>
+            <a href="#" class="text-dark d-flex flex-column align-items-center text-center" data-bs-toggle="modal" data-bs-target="#cartModal">
+                <img src="{{ url_for('static', filename='images/shopping-cart.png') }}" alt=" عربة التسوق" width="25"> 
+                عربة التسوق
+            </a>
+            
+        </div>
+    </footer>
+    <!--End Footer-->
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

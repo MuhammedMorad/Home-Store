@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Store - إتمام الشراء</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='images/shopping-cart.png') }}" rel="icon">
+</head>
+<body>
+
+    <!-- Start content -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-lg">
+                    <div class="card-body text-center">
+                        <h3 class="mb-3">🛒 المنتجات المختارة</h3>
+                        <ul id="checkout-items" class="list-group"></ul>
+                    </div>
+                </div>
+
+                <div class="card mt-3 p-3">
+                    <h4 class="text-center">أدخل بياناتك</h4>
+                    <form id="order-form">
+                        <input type="text" id="customer-name" class="form-control" placeholder="الاسم" required>
+                        <input type="text" id="customer-phone" class="form-control" placeholder="رقم الهاتف" required>
+                        <input type="text" id="customer-address" class="form-control" placeholder="العنوان" required>
+                        <button type="submit" class="btn btn-primary w-100 mt-3">📩 إرسال الطلب عبر واتساب</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End content -->
+
+    <!--Start Footer-->
+    <div style="margin-bottom: 150px;"></div>
+    <footer class="fixed-bottom bg-light p-3">
+        <div class="container d-flex justify-content-around">
+            <a href="{{ url_for('index') }}" class="text-dark d-flex flex-column align-items-center text-center">
+                <img src="{{ url_for('static', filename='images/home.png') }}" alt="الرئيسية" width="25"> 
+                الرئيسية
+            </a>
+            <a href="{{ url_for('product') }}" class="text-dark d-flex flex-column align-items-center text-center">
+                <img src="{{ url_for('static', filename='images/products.png') }}" alt="المنتجات" width="25"> 
+                المنتجات
+            </a>
+            <a href="#" class="text-dark d-flex flex-column align-items-center text-center" data-bs-toggle="modal" data-bs-target="#cartModal">
+                <img src="{{ url_for('static', filename='images/shopping-cart.png') }}" alt="المنتجات" width="25"> 
+                عربة التسوق
+            </a
+            
+        </div>
+    </footer>
+    <!--End Footer-->
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .card {
+            direction: rtl; 
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .form-control {
+            margin-bottom: 10px;
+        }
+        .list-group-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            direction: rtl;
+        }
+        a {
+            text-decoration: none;
+        }
+    </style>
+
+    <script>
+        function loadCheckout() {
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let checkoutList = document.getElementById("checkout-items");
+            checkoutList.innerHTML = "";
+
+            if (cart.length === 0) {
+                checkoutList.innerHTML = "<li class='list-group-item text-center'>🚀 لا يوجد منتجات في العربة!</li>";
+                return;
+            }
+
+            cart.forEach((item) => {
+                let li = document.createElement("li");
+                li.classList.add("list-group-item");
+                li.innerHTML = `
+                    <img src="${item.image}" width="50" class="rounded">
+                    <span>${item.name} - <strong>${item.price} EGP</strong></span>
+                `;
+                checkoutList.appendChild(li);
+            });
+        }
+
+        document.getElementById("order-form").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            let name = document.getElementById("customer-name").value;
+            let phone = document.getElementById("customer-phone").value;
+            let address = document.getElementById("customer-address").value;
+
+            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let productDetails = cart.map(item => `📦 ${item.name} - 💰 ${item.price} EGP`).join("\n");
+
+            let message = `طلب جديد:\n${productDetails}\n\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 العنوان: ${address}`;
+
+            let whatsappURL = `whatsapp://send?phone=201009324327&text=${encodeURIComponent(message)}`;
+
+            window.location.href = whatsappURL;
+        });
+
+        document.addEventListener("DOMContentLoaded", loadCheckout);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
