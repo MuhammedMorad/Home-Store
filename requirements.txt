@@ -1,6 +1,5 @@
-pip install flask flask_sqlalchemy flask_login
-pip freeze > requirements.txt
 Flask==2.1.2
 Flask-Bootstrap==3.3.7.1
-Flask-SQLAlchemy==3.0.2
+Flask-SQLAlchemy==2.5.1
 Flask-Login==0.6.1
+Flask-Migrate
