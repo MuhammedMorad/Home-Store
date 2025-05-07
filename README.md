@@ -80,9 +80,3 @@ http://localhost:5000
 ---
 
 
-
-## 🙌 Author
-
-**Muhammed Mustafa Morad**  
-🔗 [GitHub](https://github.com/MuhammedMorad)  
-🌐 [Portfolio](https://portfolio-muhammed-morad.vercel.app/)
