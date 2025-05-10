@@ -13,7 +13,7 @@ app = Flask(__name__)
 
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///store.db'
-app.config['SECRET_KEY'] = 'mohamed_store@3030'
+app.config['SECRET_KEY'] = '###'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
