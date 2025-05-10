@@ -76,7 +76,7 @@ document.getElementById("order-form").addEventListener("submit", function (event
     let message = `طلب جديد:\n${productDetails}\n\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 العنوان: ${address}\n\n💵 الإجمالي: ${totalPrice.toFixed(2)} EGP`;
 
 
-    let whatsappURL = `whatsapp://send?phone=201123456789&text=${encodeURIComponent(message)}`;
+    let whatsappURL = `whatsapp://send?phone={Enter Phone Number Here}&text=${encodeURIComponent(message)}`;
 
 
     localStorage.removeItem("cart");
@@ -119,7 +119,7 @@ document.getElementById("order-form").addEventListener("submit", function (event
         + `📍 العنوان: ${customerAddress}`;
 
 
-    const phoneNumber = "201123456789";
+    const phoneNumber = "{Enter Phone Number Here}";
     const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
 
